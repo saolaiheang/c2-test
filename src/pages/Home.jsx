@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
 import products from "../assets/data/products.json";
 
 export default function Home() {
@@ -7,10 +8,15 @@ export default function Home() {
   // Featured: first 4 items (simple + predictable for practice)
   const featured = items.slice(0, 4);
 
-  // Categories: unique by category.id
-  const categories = Array.from(
-    new Map(items.map((p) => [p.category.id, p.category])).values()
-  );
+  // Categories: unique by category.id (limit to 4)
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    fetch("https://api.escuelajs.co/api/v1/categories?limit=4")
+      .then((res) => res.json())
+      .then((data) => setCategories(data))
+      .catch((err) => console.error("Failed to fetch categories:", err));
+  }, []);
 
   // Latest: sort by creationAt desc, take 4
   const latest = [...items]
@@ -67,7 +73,7 @@ export default function Home() {
                 <img
                   src={p.images?.[0] ?? "https://placehold.co/600x400"}
                   alt={p.title}
-                  className="h-40 w-full rounded-lg object-cover mb-2"
+                  className="h-40 w-full rounded-lg object-cover mb-2 md:h-32 lg:h-40"
                   loading="lazy"
                 />
                 <div className="flex items-start justify-between gap-2">
