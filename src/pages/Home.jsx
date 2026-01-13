@@ -1,15 +1,27 @@
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import products from "../assets/data/products.json";
+// import products from "../assets/data/products.json";
 
 export default function Home() {
-  const items = products;
-
-  // Featured: first 4 items (simple + predictable for practice)
-  const featured = items.slice(0, 4);
-
-  // Categories: unique by category.id (limit to 4)
+  const [featured, setFeatured] = useState([]);
+  const [latest, setLatest] = useState([]);
   const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    fetch("https://api.escuelajs.co/api/v1/products?limit=4&offset=0")
+      .then((res) => res.json())
+      .then((data) => {
+        setFeatured(data.slice(0, 4));
+        setLatest(
+          [...data].sort(
+            (a, b) =>
+              new Date(b.createdAt).getTime() -
+              new Date(a.createdAt).getTime()
+          ).slice(0, 4)
+        );
+      })
+      .catch((err) => console.error("Failed to fetch products:", err));
+  }, []);
 
   useEffect(() => {
     fetch("https://api.escuelajs.co/api/v1/categories?limit=4")
@@ -17,14 +29,6 @@ export default function Home() {
       .then((data) => setCategories(data))
       .catch((err) => console.error("Failed to fetch categories:", err));
   }, []);
-
-  // Latest: sort by creationAt desc, take 4
-  const latest = [...items]
-    .sort(
-      (a, b) =>
-        new Date(b.creationAt).getTime() - new Date(a.creationAt).getTime()
-    )
-    .slice(0, 4);
 
   return (
     <div className="space-y-4">

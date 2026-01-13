@@ -1,7 +1,21 @@
 import { Link } from "react-router-dom";
-import products from "../assets/data/products.json";
+import { useState, useEffect } from "react";
 
 export default function Products() {
+  const [products, setProducts] = useState([]);
+  const [page, setPage] = useState(1);
+  const limit = 12;
+
+  useEffect(() => {
+    const offset = (page - 1) * limit;
+    fetch(
+      `https://api.escuelajs.co/api/v1/products?limit=${limit}&offset=${offset}`
+    )
+      .then((res) => res.json())
+      .then((data) => setProducts(data))
+      .catch((err) => console.error("Failed to fetch products:", err));
+  }, [page]);
+
   const items = products;
 
   return (
