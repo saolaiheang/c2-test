@@ -1,10 +1,13 @@
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 export default function ProductNew() {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   function handleSubmit(e) {
     e.preventDefault();
+    setLoading(true);
 
     const formData = new FormData(e.currentTarget);
 
@@ -12,16 +15,30 @@ export default function ProductNew() {
       title: formData.get("title"),
       price: Number(formData.get("price")),
       categoryId: Number(formData.get("categoryId")),
-      image: formData.get("image"),
+      images: [formData.get("image")],
       description: formData.get("description"),
     };
 
-    console.log("New product:", newProduct);
-
-    // Later: POST to API
-    alert("Product submitted (mock)");
-
-    navigate("/products");
+    fetch("https://api.escuelajs.co/api/v1/products", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        accept: "*/*",
+      },
+      body: JSON.stringify(newProduct),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setLoading(false);
+        alert("Successfully saved a new product!");
+        console.log("New product created:", data);
+        navigate("/products");
+      })
+      .catch((err) => {
+        setLoading(false);
+        alert("Saved a new product failed.");
+        console.error("Failed to create product:", err);
+      });
   }
 
   return (
@@ -101,15 +118,17 @@ export default function ProductNew() {
         <div className="flex items-center gap-3">
           <button
             type="submit"
-            className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800"
+            disabled={loading}
+            className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 disabled:opacity-50"
           >
-            Save product
+            {loading ? "Creating..." : "Save product"}
           </button>
 
           <button
             type="button"
             onClick={() => navigate(-1)}
-            className="text-sm text-slate-600 hover:underline"
+            disabled={loading}
+            className="text-sm text-slate-600 hover:underline disabled:opacity-50"
           >
             Cancel
           </button>
