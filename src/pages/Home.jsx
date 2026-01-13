@@ -57,24 +57,32 @@ export default function Home() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-3">
+          <div className="flex flex-wrap gap-4 md:gap-3">
             {featured.map((p) => (
               <Link
                 key={p.id}
                 to={`/products/${p.id}`}
-                className="block rounded-2xl border bg-white p-3 hover:shadow-sm transition"
+                className="flex-1 min-w-[calc(50%-8px)] md:min-w-[calc(50%-6px)] lg:min-w-[calc(25%-9px)] rounded-2xl border bg-white p-3 hover:shadow-sm transition"
               >
                 <img
                   src={p.images?.[0] ?? "https://placehold.co/600x400"}
                   alt={p.title}
-                  className="h-20 w-full rounded-lg object-cover mb-2"
+                  className="h-40 w-full rounded-lg object-cover mb-2"
                   loading="lazy"
                 />
-                <div className="truncate font-medium text-sm">{p.title}</div>
-                <div className="truncate text-xs text-slate-600">
-                  {p.category?.name}
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0 flex-1">
+                    <div className="truncate font-medium text-sm">
+                      {p.title}
+                    </div>
+                    <div className="truncate text-xs text-slate-600">
+                      {p.category?.name}
+                    </div>
+                  </div>
+                  <div className="shrink-0 font-semibold text-sm">
+                    ${p.price}
+                  </div>
                 </div>
-                <div className="mt-1 font-semibold text-sm">${p.price}</div>
               </Link>
             ))}
           </div>
