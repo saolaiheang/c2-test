@@ -39,27 +39,28 @@ export default function Products() {
           <Link
             key={p.id}
             to={`/products/${p.id}`}
-            className="rounded-xl border bg-white p-4 hover:shadow-sm transition"
+            className="flex flex-row md:flex-col gap-3 md:gap-0 rounded-xl border bg-white p-4 hover:shadow-sm transition"
           >
             <img
               src={p.images?.[0] ?? "https://placehold.co/600x400"}
               alt={p.title}
-              className="h-40 w-full rounded-lg object-cover"
+              className="h-32 w-32 md:h-40 md:w-full rounded-lg object-cover shrink-0"
               loading="lazy"
             />
-            <div className="mt-3 flex items-start justify-between gap-3">
-              <div>
-                <div className="font-medium line-clamp-1">{p.title}</div>
-                <div className="text-sm text-slate-600 line-clamp-1">
-                  {p.category?.name}
+            <div className="mt-0 md:mt-3 flex flex-col w-full gap-3">
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex-1">
+                  <div className="font-medium line-clamp-1">{p.title}</div>
+                  <div className="text-sm text-slate-600 line-clamp-1">
+                    {p.category?.name}
+                  </div>
                 </div>
+                <div className="shrink-0 font-semibold">${p.price}</div>
               </div>
-              <div className="shrink-0 font-semibold">${p.price}</div>
+              <p className="text-sm text-slate-600 line-clamp-2">
+                {p.description}
+              </p>
             </div>
-
-            <p className="mt-2 text-sm text-slate-600 line-clamp-2">
-              {p.description}
-            </p>
           </Link>
         ))}
       </div>
